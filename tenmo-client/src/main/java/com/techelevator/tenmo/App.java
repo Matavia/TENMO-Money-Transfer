@@ -69,17 +69,20 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		
+		String currentBalance = "Your current balance is: ";
+		System.out.println(currentBalance);
 	}
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+		String history = "Your history";
+		System.out.println(history);
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		
+		String pending = "Your pending balance is: ";
+		System.out.println(pending);
 	}
 
 	private void sendBucks() {

@@ -4,6 +4,7 @@ public class User {
 
 	private Integer id;
 	private String username;
+	private Integer balance;
 
 	public Integer getId() {
 		return id;
@@ -20,4 +21,15 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+	public Integer getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Integer balance) {
+		this.balance = balance;
+	}
+	
+	
+	
 }
