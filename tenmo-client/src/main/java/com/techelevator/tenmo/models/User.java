@@ -4,7 +4,13 @@ public class User {
 
 	private Integer id;
 	private String username;
-	private Integer balance;
+	private Long balance;
+	
+	public User(Integer id, String username, Long balance ) {
+		this.id = id;
+		this.username = username;
+		this.balance = balance;
+	}
 
 	public Integer getId() {
 		return id;
@@ -22,11 +28,11 @@ public class User {
 		this.username = username;
 	}
 
-	public Integer getBalance() {
+	public Long getBalance() {
 		return balance;
 	}
 
-	public void setBalance(Integer balance) {
+	public void setBalance(Long balance) {
 		this.balance = balance;
 	}
 	

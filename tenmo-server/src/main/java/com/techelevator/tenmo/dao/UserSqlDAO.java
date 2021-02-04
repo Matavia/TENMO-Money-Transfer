@@ -80,13 +80,12 @@ public class UserSqlDAO implements UserDAO {
     
     @Override
     public User getBalance(int id) {
-		String query = "SELECT balance FROM users WHERE id = ?";
+		String query = "SELECT balance FROM accounts WHERE user_id = " + id;
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
 		User balance = null;
 		if(results.next()) {
 			balance = this.mapRowToUser(results);
-			System.out.println("your balance is" + balance);
 		}
 		return balance;
 		
