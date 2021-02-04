@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.techelevator.reservations.models.Reservation;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.model.LoginDTO;
 import com.techelevator.tenmo.model.RegisterUserDTO;
 import com.techelevator.tenmo.model.TenmoAccount;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserAlreadyExistsException;
 import com.techelevator.tenmo.security.jwt.JWTFilter;
@@ -78,7 +78,20 @@ public class UserController {
 		
 	}
 	
-	 @RequestMapping(path = "users/id/transfer", method = RequestMethod.POST)
-	    public Transfer sendTransfer( @RequestBody Transfer transfer, @PathVariable("id") int userId)
+	 @RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
+	    public Transfer sendTransfer( @RequestBody Transfer transfer) {
+		 Transfer newTransfer = transfer;
+		 
+		 return newTransfer;
+	 }
+		 
+		 @RequestMapping(path = "/requesttransfer", method = RequestMethod.POST)
+		    public Transfer requestTransfer( @RequestBody Transfer transfer) {
+			 Transfer newTransfer = transfer;
+			 return newTransfer;
+		
+		 
+		 
+	 }
 
 }
