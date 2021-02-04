@@ -1,4 +1,6 @@
 package com.techelevator.tenmo.controller;
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -36,9 +38,9 @@ public class UserController {
 		this.userDAO = userDAO;
 	}
 	
-	@RequestMapping(path = "balance/{id}", method = RequestMethod.GET)
-	public User getBalance(@PathVariable int id) {
-		return userDAO.getBalance(id);
+	@RequestMapping(path = "/balance", method = RequestMethod.GET)
+	public User getBalance(Principal principal) {
+		return null;
 	}
 
 }
