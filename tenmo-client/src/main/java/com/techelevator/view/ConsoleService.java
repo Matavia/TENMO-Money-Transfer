@@ -73,4 +73,12 @@ public class ConsoleService {
 		} while(result == null);
 		return result;
 	}
+	
+	public void printUserList(Object[] users) {
+		for(Object user : users ) {
+			out.print(user);
+		}
+		
+		
+	}
 }

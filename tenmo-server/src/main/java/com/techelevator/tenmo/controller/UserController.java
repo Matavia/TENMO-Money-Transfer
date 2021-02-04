@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.controller;
 import java.security.Principal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -39,6 +40,22 @@ public class UserController {
 	public UserController(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
+	
+	//Gets a list of all the users
+	@RequestMapping(path = "users",method = RequestMethod.GET)
+	public List<User> getAll(){
+		return userDAO.findAll();
+	}
+	
+	//Finds user based by username ( just a test that data is being transferred )
+	@RequestMapping(path ="users/{user}",method = RequestMethod.GET)
+	public User getUserByUsername(@PathVariable String user) {
+		
+		return userDAO.findByUsername(user);
+	}
+	
+	
+	
 	
 	//pass in username information to display the correct balance
 	@RequestMapping(path = "/balance", method = RequestMethod.GET)

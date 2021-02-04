@@ -1,6 +1,11 @@
 package com.techelevator.tenmo;
 
+import java.util.List;
+
+import org.springframework.http.HttpEntity;
+
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
@@ -52,6 +57,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				viewCurrentBalance();
 			} else if(MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS.equals(choice)) {
 				viewTransferHistory();
+			
 			} else if(MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS.equals(choice)) {
 				viewPendingRequests();
 			} else if(MAIN_MENU_OPTION_SEND_BUCKS.equals(choice)) {
@@ -66,6 +72,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			}
 		}
 	}
+
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
