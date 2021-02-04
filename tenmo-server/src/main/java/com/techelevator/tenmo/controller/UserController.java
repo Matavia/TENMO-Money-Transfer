@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.techelevator.reservations.models.Reservation;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.model.LoginDTO;
 import com.techelevator.tenmo.model.RegisterUserDTO;
+import com.techelevator.tenmo.model.TenmoAccount;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserAlreadyExistsException;
 import com.techelevator.tenmo.security.jwt.JWTFilter;
@@ -38,9 +40,45 @@ public class UserController {
 		this.userDAO = userDAO;
 	}
 	
+	//pass in username information to display the correct balance
 	@RequestMapping(path = "/balance", method = RequestMethod.GET)
-	public User getBalance(Principal principal) {
-		return null;
+	public String getBalance(Principal principal) {
+		TenmoAccount test = new TenmoAccount();
+		 test.setBalance(300);
+		String message = "Your current balance is: " + test.getBalance();
+		
+		return message;
+		
 	}
+	
+	@RequestMapping(path ="/transfers", method = RequestMethod.GET)
+	public String viewTransfers() {
+		
+		TenmoAccount test = new TenmoAccount();
+		TenmoAccount test1 =new TenmoAccount();
+		
+		  test.setAccountTo("me");
+		  test.setAccountFrom("you");
+		  test.setAmount(100);
+		
+		  return test.getAccountTo() +  test.getAccountFrom() + test.getAmount();
+	}
+	
+	@RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
+	public String viewTransferDetails(@PathVariable int id) {
+		TenmoAccount test = new TenmoAccount();
+		test.setTransferId(id);
+		test.setUsername("Name");
+		test.setAccountFrom("Me");
+		test.setAccountTo("Them");
+		test.setTransferType("Send");
+		test.setAmount(20);
+		
+		return test.getTransferId() + test.getAccountFrom() + test.getAccountTo() + test.getAmount();
+		
+	}
+	
+	 @RequestMapping(path = "users/id/transfer", method = RequestMethod.POST)
+	    public Transfer sendTransfer( @RequestBody Transfer transfer, @PathVariable("id") int userId)
 
 }
