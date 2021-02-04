@@ -6,10 +6,28 @@ public class Transfer {
 	private int transferId;
 	private String accountTo;
 	private String accountFrom;
-	private int amount;
+	private Long amount;
 	private String transferType;
+	private int transferStatus;
+	
+	public Transfer() {}
+	
+	public Transfer(int transferId, String accountTo, String accountFrom, Long amount, String trasnferType, int transferStatus, String transferType) {
+		this.transferId = transferId;
+		this.accountTo = accountTo;
+		this.accountFrom = accountFrom;
+		this.amount = amount;
+		this.transferType = transferType;
+		this.transferStatus = transferStatus;
+	}
 	
 	
+	public int getTransferStatus() {
+		return transferStatus;
+	}
+	public void setTransferStatus(int transferStatus) {
+		this.transferStatus = transferStatus;
+	}
 	public String getTransferType() {
 		return transferType;
 	}
@@ -34,10 +52,10 @@ public class Transfer {
 	public void setAccountTo(String accountTo) {
 		this.accountTo = accountTo;
 	}
-	public int getAmount() {
+	public Long getAmount() {
 		return amount;
 	}
-	public void setAmount(int amount) {
+	public void setAmount(Long amount) {
 		this.amount = amount;
 	}
 
