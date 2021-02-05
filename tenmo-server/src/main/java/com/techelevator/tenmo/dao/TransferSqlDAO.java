@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 
 import java.sql.Connection;
@@ -71,10 +72,11 @@ public class TransferSqlDAO implements TransferDAO {
 
 	// Sends Transfers, updates balance, and inserts a record in transfer table
 	@Override
-	public Transfer transfer(Transfer transfer) throws Exception {
+	public Transfer transfer(int userId, Transfer transfer) throws Exception {
 
 		int accountTo = transfer.getAccountTo();
-		int accountFrom = transfer.getAccountFrom();
+		int accountFrom = userId;
+		
 		BigDecimal amount = transfer.getAmount();
 		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
 
@@ -83,7 +85,7 @@ public class TransferSqlDAO implements TransferDAO {
 		try {
 			con.setAutoCommit(false);
 
-			BigDecimal balance = userDAO.findBalanceByUserId(accountFrom);
+			BigDecimal balance = userDAO.findBalanceByUserId(userId);
 
 			if (balance.compareTo(amount) < 0) {
 				// TODO write a custom exception that uses a 400 status exception

@@ -8,6 +8,8 @@ import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
+import com.techelevator.tenmo.services.UserService;
+import com.techelevator.ten
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
 
@@ -30,6 +32,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+    private UserService userService;
+    private ConsoleService consoleService;
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -77,6 +81,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
 		String currentBalance = "Your current balance is: ";
+		int userId = consoleService.getUserInputInteger()
+		consoleService.printBalance(userService.getBalance());
 		System.out.println(currentBalance);
 	}
 
@@ -149,6 +155,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			UserCredentials credentials = collectUserCredentials();
 		    try {
 				currentUser = authenticationService.login(credentials);
+				this.userService.setAuthToken(currentUser.getToken());
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
 				System.out.println("Please attempt to login again.");

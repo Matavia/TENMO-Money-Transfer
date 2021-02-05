@@ -80,10 +80,11 @@ public class UserController {
 
 	// pass in username information to display the correct balance
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(path = "/balance/{id}", method = RequestMethod.GET)
-	public BigDecimal getBalance(@PathVariable int id, Principal principal) {
-	
-		return userDAO.findBalanceByUserId(id);
+	@RequestMapping(path = "/balance/", method = RequestMethod.GET)
+	public BigDecimal getBalance(Principal principal) {
+	String userName = principal.getName();
+	int userId = this.userDAO.findIdByUsername(userName);
+		return userDAO.findBalanceByUserId(userId);
 	
 	}
 
@@ -92,8 +93,12 @@ public class UserController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
-	public Transfer sendTransfer(@RequestBody Transfer transfer) throws Exception {
-		return transferDAO.transfer(transfer);
+	public Transfer sendTransfer(@RequestBody Transfer transfer, Principal principal) throws Exception {
+		
+		String userName = principal.getName();
+		int userId = this.userDAO.findIdByUsername(userName);
+		
+		return transferDAO.transfer(userId,transfer);
 		
 		
 	}

@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import com.techelevator.tenmo.models.User;
+
 public class ConsoleService {
 
 	private PrintWriter out;
@@ -79,6 +81,10 @@ public class ConsoleService {
 			out.print(user);
 		}
 		
+	}
+	
+	public void printBalance(User user) {
+		System.out.println(user.toString());
 		
 	}
 }

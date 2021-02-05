@@ -10,7 +10,7 @@ public interface TransferDAO {
 	List<Transfer> listAll();
 	List<Transfer> listTransfersByUserId(int id);
 	List<Transfer> findByStatus(int status);
-    Transfer transfer(Transfer transfer) throws Exception;
+    Transfer transfer(int userId, Transfer transfer) throws Exception;
     Transfer getTransferDetailsById(int id) throws Exception;
 	
 	
