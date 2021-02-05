@@ -51,7 +51,8 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 
 	@Override
-	public List<Transfer> findByUsername() {
+	public List<Transfer> findByUsername(){
+		
 		// TODO Auto-generated method stub
 		
 		return null;
@@ -62,9 +63,9 @@ public class TransferSqlDAO implements TransferDAO {
 		transfer.setTransferId(rs.getInt("transfer_id"));
 		transfer.setTransferType(rs.getString("transfer_type_id"));
 		transfer.setTransferStatus(rs.getInt("transfer_status_id"));
-		transfer.setAccountFrom(rs.getString("account_from"));
-		transfer.setAccountTo(rs.getString("account_to"));
-		transfer.setAmount(rs.getLong("amount"));
+		transfer.setAccountFrom(rs.getInt("account_from"));
+		transfer.setAccountTo(rs.getInt("account_to"));
+		transfer.setAmount(rs.getBigDecimal("amount"));
 		
 		return transfer;
 		

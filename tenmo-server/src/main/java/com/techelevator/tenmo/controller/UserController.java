@@ -1,4 +1,5 @@
 package com.techelevator.tenmo.controller;
+
 import java.security.Principal;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.model.LoginDTO;
 import com.techelevator.tenmo.model.RegisterUserDTO;
@@ -31,84 +33,61 @@ import com.techelevator.tenmo.security.jwt.JWTFilter;
 import com.techelevator.tenmo.security.jwt.TokenProvider;
 import com.techelevator.tenmo.model.User;
 
-
 @RestController
 public class UserController {
-	
+
 	private UserDAO userDAO;
-	
-	public UserController(UserDAO userDAO) {
+	private TransferDAO transferDAO;
+
+	public UserController(UserDAO userDAO, TransferDAO transferDAO) {
 		this.userDAO = userDAO;
+		this.transferDAO = transferDAO;
 	}
 	
-	//Gets a list of all the users
-	@RequestMapping(path = "users",method = RequestMethod.GET)
-	public List<User> getAll(){
+	
+	//Shows all transfers
+	@RequestMapping(path = "transfers", method = RequestMethod.GET)
+	public List<Transfer> listAllTransfers() {
+		return transferDAO.listAll();
+	}
+
+	//Shows transfer by id
+	@RequestMapping(path = "transfers/{id}", method = RequestMethod.GET)
+	public List<Transfer> viewSentTransfers(@PathVariable int id) {
+		return transferDAO.findByStatus(id);
+	}
+
+	// Gets a list of all the users
+	@RequestMapping(path = "users", method = RequestMethod.GET)
+	public List<User> getAll() {
 		return userDAO.findAll();
 	}
-	
-	//Finds user based by username ( just a test that data is being transferred )
-	@RequestMapping(path ="users/{user}",method = RequestMethod.GET)
-	public User getUserByUsername(@PathVariable String user) {
-		
-		return userDAO.findByUsername(user);
-	}
-	
-	
-	
-	
-	//pass in username information to display the correct balance
+
+	// pass in username information to display the correct balance
 	@RequestMapping(path = "/balance", method = RequestMethod.GET)
 	public String getBalance(Principal principal) {
 		TenmoAccount test = new TenmoAccount();
-		 test.setBalance(300);
+		test.setBalance(300);
 		String message = "Your current balance is: " + test.getBalance();
-		
+
 		return message;
-		
+
 	}
 	
-	@RequestMapping(path ="/transfers", method = RequestMethod.GET)
-	public String viewTransfers() {
-		
-		TenmoAccount test = new TenmoAccount();
-		TenmoAccount test1 =new TenmoAccount();
-		
-		  test.setAccountTo("me");
-		  test.setAccountFrom("you");
-		  test.setAmount(100);
-		
-		  return test.getAccountTo() +  test.getAccountFrom() + test.getAmount();
+	//sends transfer
+	@RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
+	public Transfer sendTransfer(@RequestBody Transfer transfer) {
+		Transfer newTransfer = transfer;
+
+		return newTransfer;
 	}
-	
-	@RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
-	public String viewTransferDetails(@PathVariable int id) {
-		TenmoAccount test = new TenmoAccount();
-		test.setTransferId(id);
-		test.setUsername("Name");
-		test.setAccountFrom("Me");
-		test.setAccountTo("Them");
-		test.setTransferType("Send");
-		test.setAmount(20);
-		
-		return test.getTransferId() + test.getAccountFrom() + test.getAccountTo() + test.getAmount();
-		
+
+	//not a requirement yet to send requests 
+	@RequestMapping(path = "/requesttransfer", method = RequestMethod.POST)
+	public Transfer requestTransfer(@RequestBody Transfer transfer) {
+		Transfer newTransfer = transfer;
+		return newTransfer;
+
 	}
-	
-	 @RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
-	    public Transfer sendTransfer( @RequestBody Transfer transfer) {
-		 Transfer newTransfer = transfer;
-		 
-		 return newTransfer;
-	 }
-		 
-		 @RequestMapping(path = "/requesttransfer", method = RequestMethod.POST)
-		    public Transfer requestTransfer( @RequestBody Transfer transfer) {
-			 Transfer newTransfer = transfer;
-			 return newTransfer;
-		
-		 
-		 
-	 }
 
 }
