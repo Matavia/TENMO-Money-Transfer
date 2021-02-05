@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.controller;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -46,33 +48,35 @@ public class UserController {
 	
 	
 	//Shows all transfers
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(path = "transfers", method = RequestMethod.GET)
 	public List<Transfer> listAllTransfers() {
 		return transferDAO.listAll();
 	}
 
 	//Shows transfer by id
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(path = "transfers/{id}", method = RequestMethod.GET)
 	public List<Transfer> viewSentTransfers(@PathVariable int id) {
 		return transferDAO.findByStatus(id);
 	}
 
 	// Gets a list of all the users
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(path = "users", method = RequestMethod.GET)
 	public List<User> getAll() {
 		return userDAO.findAll();
 	}
 
 	// pass in username information to display the correct balance
-	@RequestMapping(path = "/balance", method = RequestMethod.GET)
-	public String getBalance(Principal principal) {
-		TenmoAccount test = new TenmoAccount();
-		test.setBalance(300);
-		String message = "Your current balance is: " + test.getBalance();
-
-		return message;
-
+	@PreAuthorize("isAuthenticated()")
+	@RequestMapping(path = "/balance/{id}", method = RequestMethod.GET)
+	public BigDecimal getBalance(@PathVariable int id, Principal principal) {
+	
+		return userDAO.findBalanceByUserId(id);
+	
 	}
+
 	
 	//sends transfer
 	@RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
