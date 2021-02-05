@@ -23,6 +23,14 @@ public class Transfer {
 		this.transferStatus = transferStatus;
 	}
 	
+	public Transfer(int accountTo, int accountFrom, BigDecimal amount) {
+		
+		this.accountTo = accountTo;
+		this.accountFrom = accountFrom;
+		this.amount = amount;
+		
+	}
+	
 	
 	public int getTransferStatus() {
 		return transferStatus;

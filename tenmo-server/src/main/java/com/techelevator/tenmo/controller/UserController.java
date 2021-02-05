@@ -79,11 +79,12 @@ public class UserController {
 
 	
 	//sends transfer
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
-	public Transfer sendTransfer(@RequestBody Transfer transfer) {
-		Transfer newTransfer = transfer;
-
-		return newTransfer;
+	public Transfer  sendTransfer(@RequestBody Transfer transfer) {
+		transferDAO.transfer(transfer);
+		return transfer;
+		
 	}
 
 	//not a requirement yet to send requests 

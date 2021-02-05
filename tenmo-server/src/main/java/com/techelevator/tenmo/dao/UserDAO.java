@@ -15,12 +15,11 @@ public interface UserDAO {
     int findIdByUsername(String username);
 
     boolean create(String username, String password);
-    
-   public void createAccounts();
-   
-   User getBalance(int id);
-   
+ 
+ 
    public BigDecimal findBalanceByUserId(int id);
+
+   public void updateBalance(int accountTo, int accountFrom, BigDecimal amount);
 
 	   
 

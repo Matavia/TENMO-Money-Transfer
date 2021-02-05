@@ -29,44 +29,26 @@ public class UserSqlDAO implements UserDAO {
 	public int findIdByUsername(String username) {
 		return jdbcTemplate.queryForObject("select user_id from users where username = ?", int.class, username);
 	}
-
-	/*@Override
-	public void createAccounts() {
-		String query = "SELECT * FROM accounts ";
-
-		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
-		while (results.next()) {
-			TenmoAccount account = mapRowToAccount(results);
-			
-
-		}
-		
-	}
-	*/
-	@Override
-	public User getBalance(int id) {
-		String query = "SELECT balance FROM accounts WHERE user_id = ?";
-
-		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
-		User balance = null;
-		if (results.next()) {
-			balance = this.mapRowToUser(results);
-		}
-		return balance;
-	}
+	
 	@Override
 	public BigDecimal findBalanceByUserId(int id) {
 		return jdbcTemplate.queryForObject("SELECT balance FROM accounts WHERE user_id = ?", BigDecimal.class, id);
 	}
-
-	/* TenmoAccount mapRowToAccount(SqlRowSet rs) {
-		TenmoAccount account = new TenmoAccount();
-		account.setId(rs.getInt("account_id"));
-		account.setBalance(rs.getBigDecimal("balance"));
-		account.setUserId(rs.getInt("user_id"));
-		return account;
+    
+	@Override
+    public void updateBalance(int accountTo, int accountFrom, BigDecimal amount) {
+		BigDecimal accountFromBalance = findBalanceByUserId(accountFrom);
+		accountFromBalance.subtract(amount);
+		String updateAccountFromSql = "UPDATE accounts SET balance = ? WHERE user_id = ?";
+		jdbcTemplate.update(updateAccountFromSql, accountFromBalance, accountTo);
+		
+		
+		BigDecimal accountToBalance = findBalanceByUserId(accountTo);
+		accountToBalance.add(amount);
+		String updateAccountToSql ="UPDATE accounts SET balance = ? WHERE user_id = ?";
+		jdbcTemplate.update(updateAccountToSql, accountToBalance, accountFrom);
+		
 	}
-*/
 	// Used this method to test data coming to PostMan
 	@Override
 	public List<User> findAll() {
@@ -128,10 +110,8 @@ public class UserSqlDAO implements UserDAO {
 		return user;
 	}
 
-	@Override
-	public void createAccounts() {
-		// TODO Auto-generated method stub
+	
 		
 	}
 
-}
+
