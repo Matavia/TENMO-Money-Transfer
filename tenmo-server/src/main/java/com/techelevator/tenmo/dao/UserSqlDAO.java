@@ -24,6 +24,7 @@ public class UserSqlDAO implements UserDAO {
 	public UserSqlDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
+	
 
 	@Override
 	public int findIdByUsername(String username) {

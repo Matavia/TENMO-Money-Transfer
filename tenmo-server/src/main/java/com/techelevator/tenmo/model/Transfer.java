@@ -9,12 +9,12 @@ public class Transfer {
 	private int accountTo;
 	private int accountFrom;
 	private BigDecimal amount;
-	private String transferType;
+	private int transferType;
 	private int transferStatus;
 	
 	public Transfer() {}
 	
-	public Transfer(int transferId, int accountTo, int accountFrom, BigDecimal amount, String trasnferType, int transferStatus, String transferType) {
+	public Transfer(int transferId, int accountTo, int accountFrom, BigDecimal amount, int trasnferType, int transferStatus, int transferType) {
 		this.transferId = transferId;
 		this.accountTo = accountTo;
 		this.accountFrom = accountFrom;
@@ -38,10 +38,10 @@ public class Transfer {
 	public void setTransferStatus(int transferStatus) {
 		this.transferStatus = transferStatus;
 	}
-	public String getTransferType() {
+	public int getTransferType() {
 		return transferType;
 	}
-	public void setTransferType(String transferType) {
+	public void setTransferType(int transferType) {
 		this.transferType = transferType;
 	}
 	public int getTransferId() {

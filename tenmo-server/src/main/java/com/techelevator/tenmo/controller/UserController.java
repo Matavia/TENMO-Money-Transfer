@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import java.math.BigDecimal;
+import java.net.http.HttpResponse;
 import java.security.Principal;
 import java.util.List;
 
@@ -53,14 +54,23 @@ public class UserController {
 	public List<Transfer> listAllTransfers() {
 		return transferDAO.listAll();
 	}
-
-	//Shows transfer by id
+	
+	
+	//View Transfer History - Sent and Received
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(path = "transfers/{id}", method = RequestMethod.GET)
-	public List<Transfer> viewSentTransfers(@PathVariable int id) {
-		return transferDAO.findByStatus(id);
+	@RequestMapping(path = "transfers/{userId}", method = RequestMethod.GET)
+	public List<Transfer> viewUserTransferHistory(@PathVariable int userId){
+		return transferDAO.listTransfersByUserId(userId);
+		
 	}
 
+	//View Transfer Details
+	@PreAuthorize("isAuthenticated()")
+	@RequestMapping(path = "transferdetails/{id}",method = RequestMethod.GET)
+	public Transfer viewTransactionDetails(@PathVariable int id) throws Exception {
+		
+		return transferDAO.getTransferDetailsById(id);
+	}
 	// Gets a list of all the users
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(path = "users", method = RequestMethod.GET)
@@ -79,11 +89,12 @@ public class UserController {
 
 	
 	//sends transfer
+	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
-	public Transfer  sendTransfer(@RequestBody Transfer transfer) {
+	public void sendTransfer(@RequestBody Transfer transfer) throws Exception {
 		transferDAO.transfer(transfer);
-		return transfer;
+		
 		
 	}
 

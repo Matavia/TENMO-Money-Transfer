@@ -8,12 +8,10 @@ import java.util.List;
 public interface TransferDAO {
 	
 	List<Transfer> listAll();
-	
+	List<Transfer> listTransfersByUserId(int id);
 	List<Transfer> findByStatus(int status);
-	
-	List<Transfer> findByUsername();
-	
-public Transfer transfer(Transfer transfer) throws Exception;
+    Transfer transfer(Transfer transfer) throws Exception;
+    Transfer getTransferDetailsById(int id) throws Exception;
 	
 	
 	

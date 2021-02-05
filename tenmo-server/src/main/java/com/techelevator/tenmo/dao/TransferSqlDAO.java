@@ -1,6 +1,5 @@
 package com.techelevator.tenmo.dao;
 
-import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -23,8 +22,8 @@ public class TransferSqlDAO implements TransferDAO {
 	public TransferSqlDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
 
+	// List all Transfers
 	@Override
 	public List<Transfer> listAll() {
 		// TODO Auto-generated method stub
@@ -39,49 +38,78 @@ public class TransferSqlDAO implements TransferDAO {
 		return transfers;
 	}
 
+	// List User Transfer History sent & received
+	public List<Transfer> listTransfersByUserId(int id) {
+
+		List<Transfer> transfers = new ArrayList<>();
+		String query = "SELECT * FROM transfers WHERE account_from =" + id + " OR account_to=" + id;
+
+		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
+		while (results.next()) {
+			Transfer transfer = mapRowToTransfer(results);
+			transfers.add(transfer);
+		}
+		return transfers;
+	}
+
+	// View Transfer Details by the Transfer Id
+	public Transfer getTransferDetailsById(int id) throws Exception {
+		Transfer foundTransfer = new Transfer();
+
+		if (id > listAll().size()) {
+			throw new TransferNotFound("Transfer Not Found");
+		}
+		for (Transfer transfer : this.listAll()) {
+			if (transfer.getTransferId() == id) {
+				foundTransfer = transfer;
+			}
+		}
+
+		return foundTransfer;
+
+	}
+
+	// Sends Transfers, updates balance, and inserts a record in transfer table
 	@Override
-	public Transfer transfer(Transfer transfer) throws Exception{
+	public Transfer transfer(Transfer transfer) throws Exception {
+
 		int accountTo = transfer.getAccountTo();
 		int accountFrom = transfer.getAccountFrom();
-		
 		BigDecimal amount = transfer.getAmount();
-		
 		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
 
-
-		 
 		Connection con = this.jdbcTemplate.getDataSource().getConnection();
+
 		try {
-		  con.setAutoCommit(false);
-		  
-		  BigDecimal balance = userDAO.findBalanceByUserId(accountFrom);
-		  
-		//TODO check the balance and throw an exception
-		  if(false) {
-			  //TODO write a custom exception that uses a 400 status exception
-			  throw new Exception("Insufficient Amount");
-		  }
-		  
-		  userDAO.updateBalance(accountTo, accountFrom, amount);
-		  
-		 //TODO Insert record and read it back
-	
-		  
-		  
-		  con.commit();
-		 } catch (Exception ex) {
-		    con.rollback();
-		    throw ex;
-		   } finally {
-		     con.setAutoCommit(true);
-		   }
-			
-			
-			
-			return transfer;
-			
+			con.setAutoCommit(false);
+
+			BigDecimal balance = userDAO.findBalanceByUserId(accountFrom);
+
+			if (balance.compareTo(amount) < 0) {
+				// TODO write a custom exception that uses a 400 status exception
+				throw new InsufficientFundsExceptions("You aint got no money");
+			}
+
+			userDAO.updateBalance(accountTo, accountFrom, amount);
+
+			// TODO Insert record and read it back
+
+			String insertTransfer = "INSERT INTO transfers (transfer_type_id,transfer_status_id,account_From, account_To, amount) "
+					+ "VALUES ('2','2', ?, ?, ?);";
+
+			jdbcTemplate.update(insertTransfer, accountFrom, accountTo, amount);
+
+			con.commit();
+		} catch (Exception ex) {
+			con.rollback();
+			throw ex;
+		} finally {
+			con.setAutoCommit(true);
 		}
-	//}
+
+		return transfer;
+
+	}
 
 	@Override
 	public List<Transfer> findByStatus(int status) {
@@ -97,18 +125,10 @@ public class TransferSqlDAO implements TransferDAO {
 		return findStatus;
 	}
 
-	@Override
-	public List<Transfer> findByUsername() {
-
-		// TODO Auto-generated method stub
-
-		return null;
-	}
-
 	private Transfer mapRowToTransfer(SqlRowSet rs) {
 		Transfer transfer = new Transfer();
 		transfer.setTransferId(rs.getInt("transfer_id"));
-		transfer.setTransferType(rs.getString("transfer_type_id"));
+		transfer.setTransferType(rs.getInt("transfer_type_id"));
 		transfer.setTransferStatus(rs.getInt("transfer_status_id"));
 		transfer.setAccountFrom(rs.getInt("account_from"));
 		transfer.setAccountTo(rs.getInt("account_to"));
