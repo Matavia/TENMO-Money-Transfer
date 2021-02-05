@@ -12,6 +12,7 @@ import java.util.List;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import java.sql.Connection;
 import com.techelevator.tenmo.model.Transfer;
 
 @Component
@@ -39,26 +40,43 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 
 	@Override
-	public Transfer transfer(Transfer transfer) {
+	public Transfer transfer(Transfer transfer) throws Exception{
 		int accountTo = transfer.getAccountTo();
 		int accountFrom = transfer.getAccountFrom();
+		
 		BigDecimal amount = transfer.getAmount();
+		
 		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
-		boolean transferComplete = false;
-		/*while (!transferComplete) {
-			try {
-				BigDecimal balance = userDAO.findBalanceByUserId(accountFrom);
-				
-				//if (balance.compareTo(amount) < 0)
-					;
-			} catch (Exception e) {
-				System.out.println("You cannot send more TE Bucks than you have in your account");
-             
-			}
-			*/
-			userDAO.updateBalance(accountTo, accountFrom, amount);
+
+
+		 
+		Connection con = this.jdbcTemplate.getDataSource().getConnection();
+		try {
+		  con.setAutoCommit(false);
+		  
+		  BigDecimal balance = userDAO.findBalanceByUserId(accountFrom);
+		  
+		//TODO check the balance and throw an exception
+		  if(false) {
+			  //TODO write a custom exception that uses a 400 status exception
+			  throw new Exception("Insufficient Amount");
+		  }
+		  
+		  userDAO.updateBalance(accountTo, accountFrom, amount);
+		  
+		 //TODO Insert record and read it back
+	
+		  
+		  
+		  con.commit();
+		 } catch (Exception ex) {
+		    con.rollback();
+		    throw ex;
+		   } finally {
+		     con.setAutoCommit(true);
+		   }
 			
-			transferComplete = true;
+			
 			
 			return transfer;
 			

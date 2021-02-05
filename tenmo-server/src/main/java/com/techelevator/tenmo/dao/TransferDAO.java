@@ -13,7 +13,7 @@ public interface TransferDAO {
 	
 	List<Transfer> findByUsername();
 	
-public Transfer transfer(Transfer transfer);
+public Transfer transfer(Transfer transfer) throws Exception;
 	
 	
 	

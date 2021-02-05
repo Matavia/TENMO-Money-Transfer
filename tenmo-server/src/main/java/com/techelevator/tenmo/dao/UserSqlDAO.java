@@ -37,16 +37,17 @@ public class UserSqlDAO implements UserDAO {
     
 	@Override
     public void updateBalance(int accountTo, int accountFrom, BigDecimal amount) {
+		
 		BigDecimal accountFromBalance = findBalanceByUserId(accountFrom);
-		accountFromBalance.subtract(amount);
+		accountFromBalance = accountFromBalance.subtract(amount);
 		String updateAccountFromSql = "UPDATE accounts SET balance = ? WHERE user_id = ?";
-		jdbcTemplate.update(updateAccountFromSql, accountFromBalance, accountTo);
+		jdbcTemplate.update(updateAccountFromSql, accountFromBalance, accountFrom);
 		
 		
 		BigDecimal accountToBalance = findBalanceByUserId(accountTo);
-		accountToBalance.add(amount);
+		accountToBalance = accountToBalance.add(amount);
 		String updateAccountToSql ="UPDATE accounts SET balance = ? WHERE user_id = ?";
-		jdbcTemplate.update(updateAccountToSql, accountToBalance, accountFrom);
+		jdbcTemplate.update(updateAccountToSql, accountToBalance, accountTo);
 		
 	}
 	// Used this method to test data coming to PostMan
