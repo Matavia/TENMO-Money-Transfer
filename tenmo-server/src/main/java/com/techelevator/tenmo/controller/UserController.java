@@ -92,8 +92,8 @@ public class UserController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
-	public void sendTransfer(@RequestBody Transfer transfer) throws Exception {
-		transferDAO.transfer(transfer);
+	public Transfer sendTransfer(@RequestBody Transfer transfer) throws Exception {
+		return transferDAO.transfer(transfer);
 		
 		
 	}
