@@ -126,7 +126,7 @@ public class TransferSqlDAO implements TransferDAO {
 
 		return findStatus;
 	}
-
+	//Added acountto and accountFrom usernames to the Transfer Model so we can have the usernames for later
 	private Transfer mapRowToTransfer(SqlRowSet rs) {
 		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
 
