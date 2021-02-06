@@ -58,8 +58,11 @@ public class UserController {
 	
 	//View Transfer History - Sent and Received
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(path = "transfers/{userId}", method = RequestMethod.GET)
-	public List<Transfer> viewUserTransferHistory(@PathVariable int userId){
+	@RequestMapping(path = "transferhistory", method = RequestMethod.GET)
+	public List<Transfer> viewUserTransferHistory(Principal principal){
+		String userName = principal.getName();
+		int userId = this.userDAO.findIdByUsername(userName);
+		
 		return transferDAO.listTransfersByUserId(userId);
 		
 	}
@@ -80,8 +83,9 @@ public class UserController {
 
 	// pass in username information to display the correct balance
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(path = "/balance/", method = RequestMethod.GET)
+	@RequestMapping(path = "balance", method = RequestMethod.GET)
 	public BigDecimal getBalance(Principal principal) {
+		
 	String userName = principal.getName();
 	int userId = this.userDAO.findIdByUsername(userName);
 		return userDAO.findBalanceByUserId(userId);
@@ -92,7 +96,7 @@ public class UserController {
 	//sends transfer
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(path = "/sendtransfer", method = RequestMethod.POST)
+	@RequestMapping(path = "sendtransfer", method = RequestMethod.POST)
 	public Transfer sendTransfer(@RequestBody Transfer transfer, Principal principal) throws Exception {
 		
 		String userName = principal.getName();
@@ -104,7 +108,7 @@ public class UserController {
 	}
 
 	//not a requirement yet to send requests 
-	@RequestMapping(path = "/requesttransfer", method = RequestMethod.POST)
+	@RequestMapping(path = "requesttransfer", method = RequestMethod.POST)
 	public Transfer requestTransfer(@RequestBody Transfer transfer) {
 		Transfer newTransfer = transfer;
 		return newTransfer;

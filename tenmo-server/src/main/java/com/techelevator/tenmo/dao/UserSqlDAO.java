@@ -28,7 +28,7 @@ public class UserSqlDAO implements UserDAO {
 
 	@Override
 	public int findIdByUsername(String username) {
-		return jdbcTemplate.queryForObject("select user_id from users where username = ?", int.class, username);
+		return jdbcTemplate.queryForObject("SELECT user_id from users WHERE username = ?", int.class, username);
 	}
 	
 	@Override
@@ -74,6 +74,17 @@ public class UserSqlDAO implements UserDAO {
 			}
 		}
 		throw new UsernameNotFoundException("User " + username + " was not found.");
+	}
+	//TODO add an exception
+	
+	public String findUsernameById(int id)  {
+		String username = null;
+		for (User user : this.findAll()) {
+			if (user.getId() == id) {
+				username = user.getUsername();
+			}
+		}
+		return username;
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.UserService;
-import com.techelevator.ten
+
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
 
@@ -33,16 +33,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private ConsoleService console;
     private AuthenticationService authenticationService;
     private UserService userService;
-    private ConsoleService consoleService;
+  
 
     public static void main(String[] args) {
-    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
+    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL), new UserService(API_BASE_URL));
     	app.run();
     }
 
-    public App(ConsoleService console, AuthenticationService authenticationService) {
+    public App(ConsoleService console, AuthenticationService authenticationService, UserService userService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
+		this.userService = userService;
 	}
 
 	public void run() {
@@ -79,17 +80,12 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-		String currentBalance = "Your current balance is: ";
-		int userId = consoleService.getUserInputInteger()
-		consoleService.printBalance(userService.getBalance());
-		System.out.println(currentBalance);
+		console.printBalance(userService.getBalance());
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		String history = "Your history";
-		System.out.println(history);
+		console.printTransferHistory(userService.viewTransferHistory(),currentUser.getUser());
+		
 	}
 
 	private void viewPendingRequests() {
@@ -162,6 +158,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			}
 		}
 	}
+	
+	
 	
 	private UserCredentials collectUserCredentials() {
 		String username = console.getUserInput("Username");

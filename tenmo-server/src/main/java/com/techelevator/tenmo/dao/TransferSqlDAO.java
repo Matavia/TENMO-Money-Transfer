@@ -76,7 +76,7 @@ public class TransferSqlDAO implements TransferDAO {
 
 		int accountTo = transfer.getAccountTo();
 		int accountFrom = userId;
-		
+
 		BigDecimal amount = transfer.getAmount();
 		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
 
@@ -128,7 +128,11 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 
 	private Transfer mapRowToTransfer(SqlRowSet rs) {
+		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
+
 		Transfer transfer = new Transfer();
+		transfer.setAccountToUsername(userDAO.findUsernameById(rs.getInt("account_to")));
+		transfer.setAccountFromUsername(userDAO.findUsernameById(rs.getInt("account_from")));
 		transfer.setTransferId(rs.getInt("transfer_id"));
 		transfer.setTransferType(rs.getInt("transfer_type_id"));
 		transfer.setTransferStatus(rs.getInt("transfer_status_id"));

@@ -1,11 +1,13 @@
 package com.techelevator.view;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.Scanner;
 
+import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
 
 public class ConsoleService {
@@ -37,10 +39,12 @@ public class ConsoleService {
 				choice = options[selectedOption - 1];
 			}
 		} catch (NumberFormatException e) {
-			// eat the exception, an error message will be displayed below since choice will be null
+			// eat the exception, an error message will be displayed below since choice will
+			// be null
 		}
 		if (choice == null) {
-			out.println(System.lineSeparator() + "*** " + userInput + " is not a valid option ***" + System.lineSeparator());
+			out.println(System.lineSeparator() + "*** " + userInput + " is not a valid option ***"
+					+ System.lineSeparator());
 		}
 		return choice;
 	}
@@ -56,7 +60,7 @@ public class ConsoleService {
 	}
 
 	public String getUserInput(String prompt) {
-		out.print(prompt+": ");
+		out.print(prompt + ": ");
 		out.flush();
 		return in.nextLine();
 	}
@@ -64,27 +68,43 @@ public class ConsoleService {
 	public Integer getUserInputInteger(String prompt) {
 		Integer result = null;
 		do {
-			out.print(prompt+": ");
+			out.print(prompt + ": ");
 			out.flush();
 			String userInput = in.nextLine();
 			try {
 				result = Integer.parseInt(userInput);
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
 			}
-		} while(result == null);
+		} while (result == null);
 		return result;
 	}
-	
+
 	public void printUserList(Object[] users) {
-		for(Object user : users ) {
+		for (Object user : users) {
 			out.print(user);
 		}
-		
 	}
-	
-	public void printBalance(User user) {
-		System.out.println(user.toString());
-		
+
+	// Prints the transfer history
+	public void printTransferHistory(Transfer[] transfers, User user) {
+
+		for (Transfer transfer : transfers) {
+			if (user.getUsername().contentEquals(transfer.getAccountToUsername())) {
+				out.print("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getAccountFromUsername()
+						+ "\nAmount: $" + transfer.getAmount() + "\n\n\n");
+			} else {
+				out.print("Transfer ID: " + transfer.getTransferId() + "\nTo: " + transfer.getAccountToUsername()
+						+ "\nAmount: $" + transfer.getAmount() + "\n\n\n");
+			}
+		}
+
+	}
+
+	// Prints Balance
+	public void printBalance(BigDecimal balance) {
+		out.println("------------------------------ \n");
+		out.println("Your current balance is: $" + balance + "\n");
+		out.println("------------------------------ \n");
 	}
 }
