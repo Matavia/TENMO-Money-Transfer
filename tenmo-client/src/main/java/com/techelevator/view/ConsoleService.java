@@ -59,12 +59,14 @@ public class ConsoleService {
 		out.flush();
 	}
 
+	//Gets user input as a string
 	public String getUserInput(String prompt) {
 		out.print(prompt + ": ");
 		out.flush();
 		return in.nextLine();
 	}
-
+	
+	//Gets user input as an integer
 	public Integer getUserInputInteger(String prompt) {
 		Integer result = null;
 		do {
@@ -88,8 +90,9 @@ public class ConsoleService {
 
 	// Prints the transfer history
 	public void printTransferHistory(Transfer[] transfers, User user) {
+	
+		for (Transfer transfer : transfers)
 
-		for (Transfer transfer : transfers) {
 			if (user.getUsername().contentEquals(transfer.getAccountToUsername())) {
 				out.print("Transfer ID: " + transfer.getTransferId() + "\nFrom: " + transfer.getAccountFromUsername()
 						+ "\nAmount: $" + transfer.getAmount() + "\n\n\n");
@@ -99,7 +102,7 @@ public class ConsoleService {
 			}
 		}
 
-	}
+	
 
 	// Prints Balance
 	public void printBalance(BigDecimal balance) {

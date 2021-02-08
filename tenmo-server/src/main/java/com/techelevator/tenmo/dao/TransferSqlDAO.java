@@ -29,7 +29,8 @@ public class TransferSqlDAO implements TransferDAO {
 	public List<Transfer> listAll() {
 		// TODO Auto-generated method stub
 		List<Transfer> transfers = new ArrayList<>();
-		String query = "SELECT * FROM transfers";
+		String query = "SELECT * FROM transfers " + 
+		"JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id";
 
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
 		while (results.next()) {
@@ -39,11 +40,13 @@ public class TransferSqlDAO implements TransferDAO {
 		return transfers;
 	}
 
-	// List User Transfer History sent & received
+	// List User Transfer History
 	public List<Transfer> listTransfersByUserId(int id) {
 
 		List<Transfer> transfers = new ArrayList<>();
-		String query = "SELECT * FROM transfers WHERE account_from =" + id + " OR account_to=" + id;
+		String query = "SELECT * FROM transfers " +
+				"JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id " +
+				 "WHERE account_from =" + id + " OR account_to=" + id;
 
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
 		while (results.next()) {
@@ -53,22 +56,7 @@ public class TransferSqlDAO implements TransferDAO {
 		return transfers;
 	}
 
-	// View Transfer Details by the Transfer Id
-	public Transfer getTransferDetailsById(int id) throws Exception {
-		Transfer foundTransfer = new Transfer();
 
-		if (id > listAll().size()) {
-			throw new TransferNotFound("Transfer Not Found");
-		}
-		for (Transfer transfer : this.listAll()) {
-			if (transfer.getTransferId() == id) {
-				foundTransfer = transfer;
-			}
-		}
-
-		return foundTransfer;
-
-	}
 
 	// Sends Transfers, updates balance, and inserts a record in transfer table
 	@Override
@@ -94,13 +82,11 @@ public class TransferSqlDAO implements TransferDAO {
 
 			userDAO.updateBalance(accountTo, accountFrom, amount);
 
-			// TODO Insert record and read it back
-
 			String insertTransfer = "INSERT INTO transfers (transfer_type_id,transfer_status_id,account_From, account_To, amount) "
 					+ "VALUES ('2','2', ?, ?, ?);";
 
 			jdbcTemplate.update(insertTransfer, accountFrom, accountTo, amount);
-
+			
 			con.commit();
 		} catch (Exception ex) {
 			con.rollback();
@@ -112,7 +98,7 @@ public class TransferSqlDAO implements TransferDAO {
 		return transfer;
 
 	}
-
+	// List transfer by Status Id
 	@Override
 	public List<Transfer> findByStatus(int status) {
 		// TODO Auto-generated method stub
@@ -126,7 +112,7 @@ public class TransferSqlDAO implements TransferDAO {
 
 		return findStatus;
 	}
-	//Added acountto and accountFrom usernames to the Transfer Model so we can have the usernames for later
+	//Converts DB results into a transfer object
 	private Transfer mapRowToTransfer(SqlRowSet rs) {
 		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
 
@@ -139,6 +125,7 @@ public class TransferSqlDAO implements TransferDAO {
 		transfer.setAccountFrom(rs.getInt("account_from"));
 		transfer.setAccountTo(rs.getInt("account_to"));
 		transfer.setAmount(rs.getBigDecimal("amount"));
+		transfer.setTransferTypeDesc(rs.getString("transfer_type_desc"));
 
 		return transfer;
 

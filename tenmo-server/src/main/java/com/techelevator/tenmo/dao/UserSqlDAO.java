@@ -25,17 +25,61 @@ public class UserSqlDAO implements UserDAO {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
+	
+	//Lists all Users
+	@Override
+	public List<User> findAll() {
+		List<User> users = new ArrayList<>();
+		String sql = "select * from users";
 
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+		while (results.next()) {
+			User user = mapRowToUser(results);
+			users.add(user);
+		}
+
+		return users;
+	}
+	
+	
+	//Finds user by Username, and returns User Object
+	@Override
+	public User findByUsername(String username) throws UsernameNotFoundException {
+		for (User user : this.findAll()) {
+			if (user.getUsername().toLowerCase().equals(username.toLowerCase())) {
+				return user;
+			}
+		}
+		throw new UsernameNotFoundException("User " + username + " was not found.");
+	}
+	//TODO add an exception
+	
+	
+	//Gets User Id by Username
 	@Override
 	public int findIdByUsername(String username) {
 		return jdbcTemplate.queryForObject("SELECT user_id from users WHERE username = ?", int.class, username);
 	}
 	
+	//Gets Username by Id
+	public String findUsernameById(int id)  {
+		String username = null;
+		for (User user : this.findAll()) {
+			if (user.getId() == id) {
+				username = user.getUsername();
+			}
+		}
+		return username;
+	}
+	
+	
+	//Gets User balance by User Id
 	@Override
 	public BigDecimal findBalanceByUserId(int id) {
 		return jdbcTemplate.queryForObject("SELECT balance FROM accounts WHERE user_id = ?", BigDecimal.class, id);
 	}
     
+	//Updates balances after a successful transfer
 	@Override
     public void updateBalance(int accountTo, int accountFrom, BigDecimal amount) {
 		
@@ -51,41 +95,7 @@ public class UserSqlDAO implements UserDAO {
 		jdbcTemplate.update(updateAccountToSql, accountToBalance, accountTo);
 		
 	}
-	// Used this method to test data coming to PostMan
-	@Override
-	public List<User> findAll() {
-		List<User> users = new ArrayList<>();
-		String sql = "select * from users";
 
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-		while (results.next()) {
-			User user = mapRowToUser(results);
-			users.add(user);
-		}
-
-		return users;
-	}
-
-	@Override
-	public User findByUsername(String username) throws UsernameNotFoundException {
-		for (User user : this.findAll()) {
-			if (user.getUsername().toLowerCase().equals(username.toLowerCase())) {
-				return user;
-			}
-		}
-		throw new UsernameNotFoundException("User " + username + " was not found.");
-	}
-	//TODO add an exception
-	
-	public String findUsernameById(int id)  {
-		String username = null;
-		for (User user : this.findAll()) {
-			if (user.getId() == id) {
-				username = user.getUsername();
-			}
-		}
-		return username;
-	}
 
 	@Override
 	public boolean create(String username, String password) {

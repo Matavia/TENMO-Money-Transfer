@@ -13,7 +13,10 @@ public class Transfer {
 	private BigDecimal amount;
 	private int transferType;
 	private int transferStatus;
+	private String transferTypeDesc;
 	
+
+
 	public Transfer() {}
 	
 	public Transfer(int transferId, int accountTo, int accountFrom, BigDecimal amount, int trasnferType, int transferStatus, int transferType) {
@@ -84,10 +87,25 @@ public class Transfer {
 	 public String getAccountFromUsername() {
 			return accountFromUsername;
 		}
+		public String getTransferTypeDesc() {
+			return transferTypeDesc;
+		}
 
-	{
-	
-	}
+		public void setTransferTypeDesc(String transferTypeDesc) {
+			this.transferTypeDesc = transferTypeDesc;
+		}
+
+	 @Override
+	 public String toString() {
+		 String output =
+				 "\n\n\nId: " + getTransferId() + "\n" +
+				 "From: " + getAccountFromUsername() + "\n" +
+				 "To: " + getAccountToUsername() + "\n" + 
+				 "Amount: $" + getAmount() + "\n" +
+				 "Type: " + getTransferTypeDesc() + "\n";
+				 
+		 return output;
+	 }
 
 	}
 

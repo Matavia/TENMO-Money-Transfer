@@ -20,6 +20,8 @@ public interface UserDAO {
    public BigDecimal findBalanceByUserId(int id);
 
    public void updateBalance(int accountTo, int accountFrom, BigDecimal amount);
+   
+   public String findUsernameById(int id);
 
 	   
 

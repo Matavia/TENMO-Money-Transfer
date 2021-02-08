@@ -67,15 +67,9 @@ public class UserController {
 		
 	}
 
-	//View Transfer Details
-	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(path = "transferdetails/{id}",method = RequestMethod.GET)
-	public Transfer viewTransactionDetails(@PathVariable int id) throws Exception {
-		
-		return transferDAO.getTransferDetailsById(id);
-	}
+	
 	// Gets a list of all the users
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(path = "users", method = RequestMethod.GET)
 	public List<User> getAll() {
 		return userDAO.findAll();
@@ -101,8 +95,10 @@ public class UserController {
 		
 		String userName = principal.getName();
 		int userId = this.userDAO.findIdByUsername(userName);
-		
-		return transferDAO.transfer(userId,transfer);
+		transfer = transferDAO.transfer(userId,transfer);
+		transfer.setAccountToUsername(userDAO.findUsernameById(transfer.getAccountTo()));
+		transfer.setAccountFromUsername(principal.getName());
+		return transfer ;
 		
 		
 	}

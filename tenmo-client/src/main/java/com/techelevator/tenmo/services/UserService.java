@@ -41,6 +41,18 @@ public class UserService {
 		}
 		return balance;
 	}
+	
+	public Transfer sendTransfer(int accountToId, BigDecimal amount, int accountFromId) {
+		Transfer transfer = new Transfer(accountToId,accountFromId,amount);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setBearerAuth(authToken);
+		HttpEntity<Transfer> entity = new HttpEntity<>(transfer,headers);
+		Transfer sentTransfer = restTemplate.postForObject(BASE_URL + "sendtransfer", entity, Transfer.class);
+		
+		return sentTransfer;
+		
+	}
 
 	public Transfer[] viewTransferHistory() {
 		Transfer[] transferHistory = null;
@@ -49,23 +61,37 @@ public class UserService {
 		return transferHistory;
 	}
 
-	/*
-	 * public Transfer viewTransferDetails() { }
-	 * 
-	 * public List<User> listAllUsers(){
-	 * 
-	 * }
-	 * 
-	 * public Transfer sendTransfer() {
-	 * 
-	 * }
-	 * 
-	 */
+	public Transfer viewTransferDetails(int id) {
+		Transfer foundTransfer = null;
+		Transfer[] transfers = viewTransferHistory();
+		for(Transfer transfer : transfers) {
+			if(transfer.getTransferId() == id) {
+				foundTransfer = transfer;
+			}
+		}
+			return foundTransfer;
+			
+		
+	
+	}
+	 // public Transfer viewTransferDetails() { }
+	 
+	  public User[] listAllUsers(){
+		  User[] userList = null;
+		  userList = restTemplate.exchange(BASE_URL + "users",HttpMethod.GET,makeAuthEntity(), User[].class).getBody();
+		  return userList;
+		  
+	  }
+	  
+	//public Transfer sendTransfer() {
+	 
 	private HttpEntity makeAuthEntity() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(authToken);
 		HttpEntity entity = new HttpEntity<>(headers);
 		return entity;
 	}
+	
+	
 
 }
