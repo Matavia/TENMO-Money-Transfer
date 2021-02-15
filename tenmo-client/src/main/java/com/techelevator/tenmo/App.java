@@ -128,8 +128,14 @@ public class App {
 		console.printUserList(userService.listAllUsers());
 		int accountTo = console.getUserInputInteger("Please enter the id of the user to Send Bucks to");
 		int amount = console.getUserInputInteger("Please enter the amount you'd like to send");
-		Transfer sentTransfer = userService.sendTransfer(accountTo, BigDecimal.valueOf(amount), accountFrom.getId());
-		
+		Transfer sentTransfer = null;
+		if (amount > userService.getBalance().intValue()) {
+			System.out.println("Not enough balance in your account!");
+		} else if (accountTo == accountFrom.getId() ) {
+			System.out.println("Please choose a user besides yourself!");
+		} else {
+			sentTransfer = userService.sendTransfer(accountTo, BigDecimal.valueOf(amount), accountFrom.getId());
+		}
 		//TODO Create a method in the Console Service class to print a transfer sent message 
 		//instead of using this System.out here
 		System.out.println(sentTransfer);
