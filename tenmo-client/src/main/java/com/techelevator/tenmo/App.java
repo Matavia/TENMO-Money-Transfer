@@ -38,6 +38,7 @@ public class App {
 	private ConsoleService console;
 	private AuthenticationService authenticationService;
 	private UserService userService;
+	private Transfer transfer;
 
 	public static void main(String[] args) {
 		App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL),
@@ -133,6 +134,8 @@ public class App {
 			System.out.println("Not enough balance in your account!");
 		} else if (accountTo == accountFrom.getId() ) {
 			System.out.println("Please choose a user besides yourself!");
+		} else if(accountTo > userService.listAllUsers().length) {
+			System.out.println("Not a valid user!");
 		} else {
 			sentTransfer = userService.sendTransfer(accountTo, BigDecimal.valueOf(amount), accountFrom.getId());
 		}
@@ -206,4 +209,6 @@ public class App {
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
 	}
+	
 }
+
