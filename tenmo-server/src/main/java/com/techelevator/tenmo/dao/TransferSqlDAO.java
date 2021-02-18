@@ -29,8 +29,8 @@ public class TransferSqlDAO implements TransferDAO {
 	public List<Transfer> listAll() {
 		// TODO Auto-generated method stub
 		List<Transfer> transfers = new ArrayList<>();
-		String query = "SELECT * FROM transfers " + 
-		"JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id";
+		String query = "SELECT * FROM transfers "
+				+ "JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id";
 
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
 		while (results.next()) {
@@ -44,9 +44,9 @@ public class TransferSqlDAO implements TransferDAO {
 	public List<Transfer> listTransfersByUserId(int id) {
 
 		List<Transfer> transfers = new ArrayList<>();
-		String query = "SELECT * FROM transfers " +
-				"JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id " +
-				 "WHERE account_from =" + id + " OR account_to=" + id;
+		String query = "SELECT * FROM transfers "
+				+ "JOIN transfer_types ON transfer_types.transfer_type_id = transfers.transfer_type_id "
+				+ "WHERE account_from =" + id + " OR account_to=" + id;
 
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
 		while (results.next()) {
@@ -55,8 +55,6 @@ public class TransferSqlDAO implements TransferDAO {
 		}
 		return transfers;
 	}
-
-
 
 	// Sends Transfers, updates balance, and inserts a record in transfer table
 	@Override
@@ -86,7 +84,7 @@ public class TransferSqlDAO implements TransferDAO {
 					+ "VALUES ('2','2', ?, ?, ?);";
 
 			jdbcTemplate.update(insertTransfer, accountFrom, accountTo, amount);
-			
+
 			con.commit();
 		} catch (Exception ex) {
 			con.rollback();
@@ -98,6 +96,7 @@ public class TransferSqlDAO implements TransferDAO {
 		return transfer;
 
 	}
+
 	// List transfer by Status Id
 	@Override
 	public List<Transfer> findByStatus(int status) {
@@ -112,7 +111,8 @@ public class TransferSqlDAO implements TransferDAO {
 
 		return findStatus;
 	}
-	//Converts DB results into a transfer object
+
+	// Converts DB row into a transfer object
 	private Transfer mapRowToTransfer(SqlRowSet rs) {
 		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
 

@@ -59,14 +59,14 @@ public class ConsoleService {
 		out.flush();
 	}
 
-	//Gets user input as a string
+	// Gets user input as a string
 	public String getUserInput(String prompt) {
 		out.print(prompt + ": ");
 		out.flush();
 		return in.nextLine();
 	}
-	
-	//Gets user input as an integer
+
+	// Gets user input as an integer
 	public Integer getUserInputInteger(String prompt) {
 		Integer result = null;
 		do {
@@ -90,7 +90,9 @@ public class ConsoleService {
 
 	// Prints the transfer history
 	public void printTransferHistory(Transfer[] transfers, User user) {
-	
+
+		printHeader("Transfer History");
+
 		for (Transfer transfer : transfers)
 
 			if (user.getUsername().contentEquals(transfer.getAccountToUsername())) {
@@ -100,9 +102,24 @@ public class ConsoleService {
 				out.print("Transfer ID: " + transfer.getTransferId() + "\nTo: " + transfer.getAccountToUsername()
 						+ "\nAmount: $" + transfer.getAmount() + "\n\n\n");
 			}
-		}
+	}
 
-	
+	//Prints transfer Sent Message
+	public void printTransferSuccessMessage(Transfer transfer) {
+		out.println("\n------------------------------ \n");
+		out.print("Transfer Sent!");
+		out.print("\n\n" + transfer.getAccountFromUsername() + " " + "is now $" + transfer.getAmount()
+				+ " richer :)\n\n");
+		out.println("------------------------------ \n");
+
+	}
+	//Header Template
+	public void printHeader(String headerMessage) {
+		out.println("\n------------------------------ \n");
+		out.print(headerMessage.toUpperCase() + "\n");
+		out.println("\n------------------------------ \n");
+
+	}
 
 	// Prints Balance
 	public void printBalance(BigDecimal balance) {

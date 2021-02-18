@@ -1,10 +1,6 @@
 package com.techelevator.tenmo;
 
 import java.math.BigDecimal;
-import java.util.List;
-
-import org.springframework.http.HttpEntity;
-
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
@@ -13,6 +9,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.UserService;
 
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -38,6 +35,7 @@ public class App {
 	private ConsoleService console;
 	private AuthenticationService authenticationService;
 	private UserService userService;
+	
 
 	public static void main(String[] args) {
 		App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL),
@@ -70,11 +68,11 @@ public class App {
 				viewTransferDetails();
 
 			} else if (MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS.equals(choice)) {
-				viewPendingRequests();
+				System.out.println("***Feature Coming Soon***");
 			} else if (MAIN_MENU_OPTION_SEND_BUCKS.equals(choice)) {
 				sendBucks();
 			} else if (MAIN_MENU_OPTION_REQUEST_BUCKS.equals(choice)) {
-				requestBucks();
+				System.out.println("***Feature Coming Soon***");
 			} else if (MAIN_MENU_OPTION_LOGIN.equals(choice)) {
 				login();
 			} else {
@@ -83,7 +81,7 @@ public class App {
 			}
 		}
 	}
-	
+
 	private void viewCurrentBalance() {
 		console.printBalance(userService.getBalance());
 	}
@@ -96,47 +94,55 @@ public class App {
 	private void viewTransferDetails() {
 		Transfer[] transfers = userService.viewTransferHistory();
 		Transfer foundTransfer = null;
-		
-			
-			while(foundTransfer == null) {
-				int id = console.getUserInputInteger("Enter transfer id to view details");
-				for (Transfer transfer : transfers) {
+
+		while (foundTransfer == null) {
+			int id = console.getUserInputInteger("Enter transfer id to view details (Enter 0 to cancel)");
+			if (id == 0) {
+				break;
+			}
+
+			for (Transfer transfer : transfers) {
 				if (id == transfer.getTransferId()) {
 					foundTransfer = userService.viewTransferDetails(id);
-					System.out.println(foundTransfer);	
-				} 	
-			}
-				if(foundTransfer == null) {
-					System.out.println("**Invalid selection**");
+					console.printHeader("Transfer Details");
+					System.out.println(foundTransfer);
 				}
-			 
-			} 
+			}
+			if (foundTransfer == null) {
+				System.out.println("**Invalid selection**");
+			}
+
 		}
-		
-	
-
-	
-
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		String pending = "Your pending balance is: ";
-		System.out.println(pending);
 	}
 
 	private void sendBucks() {
 		User accountFrom = currentUser.getUser();
+		console.printHeader("User ID		Name");
 		console.printUserList(userService.listAllUsers());
-		int accountTo = console.getUserInputInteger("Please enter the id of the user to Send Bucks to");
-		int amount = console.getUserInputInteger("Please enter the amount you'd like to send");
-		Transfer sentTransfer = userService.sendTransfer(accountTo, BigDecimal.valueOf(amount), accountFrom.getId());
-		
-		//TODO Create a method in the Console Service class to print a transfer sent message 
-		//instead of using this System.out here
-		System.out.println(sentTransfer);
-	}
+		int accountTo = -1;
 
-	private void requestBucks() {
-		// TODO Auto-generated method stub
+		while (accountTo < 0) {
+			accountTo = console
+					.getUserInputInteger("Please enter the id of the user to Send Bucks to (Enter 0 to cancel) ");
+			if (accountTo == 0) {
+				break;
+			} else if (accountTo == currentUser.getUser().getId()) {
+				accountTo = -1;
+				System.out.println("\n **Sorry can't send funds to yourself, try again** \n");
+			} else {
+				int amount = console.getUserInputInteger("Please enter the amount you'd like to send (Enter 0 to cancel)");
+				if (amount == 0) {
+					break;
+				}
+				else {
+				Transfer sentTransfer = userService.sendTransfer(accountTo, BigDecimal.valueOf(amount),accountFrom.getId());
+				console.printTransferSuccessMessage(sentTransfer);
+				}
+			}
+		}
+		// TODO Create a method in the Console Service class to print a transfer sent
+		// message
+		// instead of using this System.out here
 
 	}
 

@@ -1,6 +1,6 @@
 package com.techelevator.tenmo.dao;
 
-import com.techelevator.tenmo.model.TenmoAccount;
+
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,9 +24,8 @@ public class UserSqlDAO implements UserDAO {
 	public UserSqlDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
-	
-	//Lists all Users
+
+	// Lists all Users
 	@Override
 	public List<User> findAll() {
 		List<User> users = new ArrayList<>();
@@ -40,9 +39,8 @@ public class UserSqlDAO implements UserDAO {
 
 		return users;
 	}
-	
-	
-	//Finds user by Username, and returns User Object
+
+	// Finds user by Username, and returns User Object
 	@Override
 	public User findByUsername(String username) throws UsernameNotFoundException {
 		for (User user : this.findAll()) {
@@ -52,17 +50,16 @@ public class UserSqlDAO implements UserDAO {
 		}
 		throw new UsernameNotFoundException("User " + username + " was not found.");
 	}
-	//TODO add an exception
-	
-	
-	//Gets User Id by Username
+	// TODO add an exception
+
+	// Gets User Id by Username
 	@Override
 	public int findIdByUsername(String username) {
 		return jdbcTemplate.queryForObject("SELECT user_id from users WHERE username = ?", int.class, username);
 	}
-	
-	//Gets Username by Id
-	public String findUsernameById(int id)  {
+
+	// Gets Username by Id
+	public String findUsernameById(int id) {
 		String username = null;
 		for (User user : this.findAll()) {
 			if (user.getId() == id) {
@@ -71,31 +68,28 @@ public class UserSqlDAO implements UserDAO {
 		}
 		return username;
 	}
-	
-	
-	//Gets User balance by User Id
+
+	// Gets User balance by User Id
 	@Override
 	public BigDecimal findBalanceByUserId(int id) {
 		return jdbcTemplate.queryForObject("SELECT balance FROM accounts WHERE user_id = ?", BigDecimal.class, id);
 	}
-    
-	//Updates balances after a successful transfer
+
+	// Updates balances after a successful transfer
 	@Override
-    public void updateBalance(int accountTo, int accountFrom, BigDecimal amount) {
-		
+	public void updateBalance(int accountTo, int accountFrom, BigDecimal amount) {
+
 		BigDecimal accountFromBalance = findBalanceByUserId(accountFrom);
 		accountFromBalance = accountFromBalance.subtract(amount);
 		String updateAccountFromSql = "UPDATE accounts SET balance = ? WHERE user_id = ?";
 		jdbcTemplate.update(updateAccountFromSql, accountFromBalance, accountFrom);
-		
-		
+
 		BigDecimal accountToBalance = findBalanceByUserId(accountTo);
 		accountToBalance = accountToBalance.add(amount);
-		String updateAccountToSql ="UPDATE accounts SET balance = ? WHERE user_id = ?";
+		String updateAccountToSql = "UPDATE accounts SET balance = ? WHERE user_id = ?";
 		jdbcTemplate.update(updateAccountToSql, accountToBalance, accountTo);
-		
-	}
 
+	}
 
 	@Override
 	public boolean create(String username, String password) {
@@ -133,8 +127,4 @@ public class UserSqlDAO implements UserDAO {
 		return user;
 	}
 
-	
-		
-	}
-
-
+}
