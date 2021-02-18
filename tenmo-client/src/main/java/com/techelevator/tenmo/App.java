@@ -35,7 +35,8 @@ public class App {
 	private ConsoleService console;
 	private AuthenticationService authenticationService;
 	private UserService userService;
-	
+
+	private Transfer transfer;
 
 	public static void main(String[] args) {
 		App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL),
@@ -130,19 +131,22 @@ public class App {
 				accountTo = -1;
 				System.out.println("\n **Sorry can't send funds to yourself, try again** \n");
 			} else {
-				int amount = console.getUserInputInteger("Please enter the amount you'd like to send (Enter 0 to cancel)");
-				if (amount == 0) {
+				int amount = console
+						.getUserInputInteger("Please enter the amount you'd like to send (Enter 0 to cancel)");
+				if (amount > userService.getBalance().intValue()) {
+					System.out.println("\nNot enough balance in your account!");
+				} else if(amount < 0) {
+					System.out.println("\nQuit playin' wit me, enter an amount over $0 cheapo");
+					
+				}else if (amount == 0) {
 					break;
-				}
-				else {
-				Transfer sentTransfer = userService.sendTransfer(accountTo, BigDecimal.valueOf(amount),accountFrom.getId());
-				console.printTransferSuccessMessage(sentTransfer);
+				} else {
+					Transfer sentTransfer = userService.sendTransfer(accountTo, BigDecimal.valueOf(amount),
+							accountFrom.getId());
+					console.printTransferSuccessMessage(sentTransfer);
 				}
 			}
 		}
-		// TODO Create a method in the Console Service class to print a transfer sent
-		// message
-		// instead of using this System.out here
 
 	}
 
@@ -206,4 +210,5 @@ public class App {
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
 	}
+
 }
